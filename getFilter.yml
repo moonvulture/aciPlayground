@@ -1,0 +1,25 @@
+---
+- name: get Filter
+  hosts: NDO
+  gather_facts: false
+  vars:
+    schema: schema1
+    template: template1
+    filter: Any
+  
+  tasks:
+
+    - name: Query all filter entries
+      cisco.mso.mso_schema_template_filter_entry:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        schema: "{{ schema }}"
+        template: "{{ template }}"
+        filter: "{{ filter }}"
+        state: query
+      register: output
+
+    - name: debug
+      debug:
+        var: output
