@@ -2,6 +2,9 @@
 - name: gathering facts
   hosts: NDO
   gather_facts: false
+  vars:
+    schema: schema1
+    template: template1
   tasks:
 
     - name: remove VRFs
@@ -9,8 +12,8 @@
         host: "{{ ansible_host }}"
         username: "{{ ansible_user }}"
         password: "{{ ansible_ssh_pass }}"
-        schema: schema1
-        template: template1
+        schema: "{{ schema }}"
+        template: "{{ template }}"
         vrf: "{{ item }}"
         state: absent
       loop:
