@@ -1,0 +1,26 @@
+---
+- name: retrieving bridge domains
+  hosts: NDO
+  gather_facts: false
+  vars:
+    template: template1
+    vrf: vrf1
+    description: Test Bridge Domain
+    subnet:  10.1.1.1/24   # subnet in cidr notation - 1.1.1.1/24
+    name: BD-V9999
+  
+  tasks:
+
+    - name: Remove Bridge Domains with Subnets
+      cisco.mso.mso_schema_template_bd:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        schema: schema1
+        template: "{{ template }}"
+        bd: "{{ name }}"
+        vrf:
+          name: "{{ vrf }}"
+          schema: "{{ schema }}"
+          template: "{{ template }}"
+        state: absent
