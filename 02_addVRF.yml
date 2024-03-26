@@ -2,6 +2,9 @@
 - name: Creating VRFs
   hosts: NDO
   gather_facts: false
+  vars:
+    schema: schema1
+    template: template1
   tasks:
 
     - name: Add VRFs
@@ -9,8 +12,8 @@
         host: "{{ ansible_host }}"
         username: "{{ ansible_user }}"
         password: "{{ ansible_ssh_pass }}"
-        schema: schema1
-        template: template1
+        schema: "{{ schema1 }}"
+        template: "{{ template }}"
         ip_data_plane_learning: enabled
         layer3_multicast: false
         vrf: "{{ item }}"
