@@ -1,0 +1,26 @@
+---
+
+# THIS IS UNTESTED
+
+- name: Query all ANPs
+  hosts: NDO
+  gather_facts: false
+  vars:
+    template: "template1"
+  tasks:
+
+    - name: Query all ANPs
+      cisco.mso.mso_schema_template_anp:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        template: "{{ template }}"
+        schema: schema1
+        state: query
+        validate_certs: false
+      delegate_to: localhost
+      register: output
+
+    - name: debug
+      debug: 
+        var: output
