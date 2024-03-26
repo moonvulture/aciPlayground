@@ -1,0 +1,22 @@
+---
+- name: Creating VRFs
+  hosts: NDO
+  gather_facts: false
+  tasks:
+
+    - name: Add VRFs
+      cisco.mso.mso_schema_template_vrf:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        schema: schema1
+        template: template1
+        ip_data_plane_learning: enabled
+        layer3_multicast: false
+        vrf: "{{ item }}"
+        state: present
+      loop:
+        - vrf1
+        - vrf2
+        - vrf3
+        - vrf4
