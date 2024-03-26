@@ -1,0 +1,26 @@
+---
+- name: get Schema
+  hosts: NDO
+  gather_facts: false
+  tasks:
+
+    - name: Query schema
+      cisco.mso.mso_rest:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        path: /mso/api/v1/schemas
+        method: get
+      delegate_to: localhost
+      register: output
+
+    - name: debug
+      debug: 
+        var: output
+
+    - name: save query to file
+      ansible.builtin.lineinfile:
+        path: Schema.yml
+        line: "{{ output | to_nice_yaml(indent=2) }}"
+        create: yes
+      delegate_to: localhost
