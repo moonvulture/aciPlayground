@@ -1,0 +1,23 @@
+---
+
+- name: Create ANP
+  hosts: NDO
+  gather_facts: false
+  tasks:
+
+    - name: Create ANP
+      cisco.mso.mso_schema_template_anp:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        template: "{{ template }}"
+        schema: Schema1
+        state: present
+        anp: AppProf-NetCentric
+        validate_certs: false
+      delegate_to: localhost
+      register: output
+
+    - name: debug
+      debug: 
+        var: output
