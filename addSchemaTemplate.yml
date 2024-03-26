@@ -2,6 +2,9 @@
 - name: gathering facts
   hosts: NDO
   gather_facts: false
+  vars:
+    tenant: Tenant1
+    schema: Schema1
   tasks:
 
     - name: Add a new template to a schema
@@ -9,8 +12,8 @@
         host: "{{ ansible_host }}"
         username: "{{ ansible_user }}"
         password: "{{ ansible_ssh_pass }}"
-        tenant: Tenant1
-        schema: Schema1
+        tenant: "{{ tenant }}"
+        schema: "{{ schema }}"
         template: "{{ item }}"
         state: present
       loop:
