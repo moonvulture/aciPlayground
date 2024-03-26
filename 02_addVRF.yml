@@ -12,7 +12,7 @@
         host: "{{ ansible_host }}"
         username: "{{ ansible_user }}"
         password: "{{ ansible_ssh_pass }}"
-        schema: "{{ schema1 }}"
+        schema: "{{ schema }}"
         template: "{{ template }}"
         ip_data_plane_learning: enabled
         layer3_multicast: false
