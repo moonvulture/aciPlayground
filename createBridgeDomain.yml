@@ -1,0 +1,46 @@
+---
+- name: create bridge domains
+  hosts: NDO
+  gather_facts: false
+  vars:
+    schema: schema1
+    template: template1
+    vrf: vrf1
+    description: Test Bridge Domain
+    subnet:  10.1.1.1/24   # subnet in cidr notation - 1.1.1.1/24
+    name: BD-V9999
+  
+  tasks:
+
+    - name: Add Bridge Domains with Subnets
+      cisco.mso.mso_schema_template_bd:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        schema: "{{ schema }}"
+        template: "{{ template }}"
+        bd: "{{ name }}"
+        arp_flooding: True
+        description: "{{ description }}"
+        display_name: "{{ name }}"
+        intersite_bum_traffic: True
+        layer2_stretch: True
+        layer2_unknown_unicast: flood
+        layer3_multicast: false
+        optimize_wan_bandwidth: True
+        unicast_routing: True
+        unknown_multicast_flooding: flood
+        ipv6_unknown_multicast_flooding: flood
+        vrf:
+          name: "{{ vrf }}"
+          schema: "{{ shema }}"
+          template: "{{ template }}"
+        subnets:
+        - subnet: "{{ subnet }}"
+          primary: False
+          description: "{{ description }}"
+          no_default_gateway: False
+          querier: False
+          scope: public
+          shared: False
+        state: present
