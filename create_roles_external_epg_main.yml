@@ -1,0 +1,24 @@
+---
+# tasks file for roles/createEPGs
+- name: include vars
+  include_vars: roles/createExternalEPGs/files/ExtEPGdict.yml
+  
+- name: Add a new EPG
+  cisco.mso.mso_schema_template_external_epg:
+    host: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_ssh_pass }}"
+    schema: schema1
+    template: "{{ template }}"
+    external_epg: "{{ item.external_epg }}"
+    description: "{{ item.description }}"
+    display_name: "{{ item.display_name }}"
+    type: "{{ item.type }}"
+    l3out: 
+      name: "{{ item.l3out }}"
+    vrf:
+      name: "{{ item.vrf.name }}"
+      schema: schema1
+      template: VRF_template
+    state: present
+  loop: "{{ external_epgs }}"
