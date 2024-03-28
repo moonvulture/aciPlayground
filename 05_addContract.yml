@@ -1,0 +1,34 @@
+---
+
+- name: Create Contract
+  hosts: NDO
+  gather_facts: false
+  vars:
+    contract_prefix: "Any_"
+    template: template1
+    schema: "6602ac2445116e2a46e61b9b"
+  tasks:
+
+    - name: Create Contract in template {{ template }}
+      cisco.mso.mso_rest:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        path: /mso/api/v1/schemas/{{ schema }}
+        method: patch  
+        content:
+          - op: add
+            path: /templates/{{ template }}/contracts/-
+            value:
+              name: "{{ contract_prefix + item }}"
+              displayName: "{{ contract_prefix + item }}"
+              filterRelationships:
+                - filterRef: "/templates/{{ template }}/filters/Any"
+                  directives: ["log", "none"]
+              scope: "context"
+      delegate_to: localhost
+      loop:
+        - vrf1
+        - vrf2
+        - vrf3
+        - vrf4
