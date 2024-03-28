@@ -1,0 +1,53 @@
+---
+
+# Make sure to change the template variable here and in the next playbook down
+- name: retrieving external EPGs
+  hosts: OLD_NDO
+  gather_facts: false
+  vars:
+    template: "template1"
+    schema: "schema1"
+  
+  tasks:
+
+    - name: Query all External EPGs
+      cisco.mso.mso_schema_template_external_epg:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        schema: "{{ schema }}"
+        template: "{{ template }}"
+        state: query
+      register: output
+
+    - name: save query to file
+      ansible.builtin.lineinfile:
+        path: /nmd_reports/02_DATA_CENTER/aciPlayground/roles/createExternalEPGs/files/existingExtEPGs_{{ template }}.yml
+        line: "{{ output | to_nice_yaml(indent=2) }}"
+        create: yes
+      delegate_to: localhost
+
+
+
+- name: creating External EPGs
+  hosts: NDO
+  gather_facts: false
+  vars:
+    template: "template1"
+
+  pre_tasks:
+
+    - name: include vars
+      include_vars: roles/createExternalEPGs/files/existingExtEPGs_{{ template }}.yml
+
+    - name: template to new data structure
+      ansible.builtin.template:
+        src: roles/createExternalEPGs/templates/createExtEPGTemplate.j2
+        dest: roles/createExternalEPGs/files/ExtEPGdict.yml
+      delegate_to: localhost
+
+  tasks:
+
+    - name: include roles
+      ansible.builtin.include_role:
+        name: createExternalEPGs
