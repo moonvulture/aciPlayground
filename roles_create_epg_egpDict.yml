@@ -1,0 +1,12 @@
+---
+endpoint_groups:
+- bd: "Vlan0141"
+  epg: "EPG-0141"
+  description: "EPG-0141"
+  display_name: "EPG-0141"
+  epg_type: application
+  intra_epg_isolation: unenforced
+  intersite_multicast_source: False
+  preferred_group: false
+  proxy_arp: False
+  useg_epg: False
