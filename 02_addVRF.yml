@@ -18,6 +18,7 @@
         template: "{{ template }}"
         ip_data_plane_learning: enabled
         layer3_multicast: false
+        vzany: true
         vrf: "{{ item }}"
         state: present
       loop: "{{ vrfs }}"
