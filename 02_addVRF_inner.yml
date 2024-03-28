@@ -1,5 +1,5 @@
 ---
-- name: Add VRFs
+- name: Add VRFs to {{ outer_item }}
   cisco.mso.mso_schema_template_vrf:
     host: "{{ ansible_host }}"
     username: "{{ ansible_user }}"
