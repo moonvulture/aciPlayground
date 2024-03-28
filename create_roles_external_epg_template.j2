@@ -1,0 +1,11 @@
+  ---
+external_epgs:
+{% for item in current %}
+- external_epg: "{{ item.name }}"
+  description: "{{ item.displayName }}"
+  display_name: "{{ item.displayName }}"
+  type: "{{ item.extEpgType }}"
+  l3out: "{{ item.l3outRef | regex_search('/l3outs/([^/]+)$', '\\1') | first }}"
+  vrf:
+    name: "{{ item.vrfRef | regex_search('/vrfs/([^/]+)$', '\\1') | first }}"
+{% endfor %}
