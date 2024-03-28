@@ -2,15 +2,22 @@
 - name: gathering facts
   hosts: NDO
   gather_facts: false
+  vars:
+    template: template1
+    schema: schema1
+    vrfs:
+      - vrf1
+      - vrf2
   tasks:
-
-    - name: Add VRFs
-      include_tasks: 02_addVRF_inner.yml
-      loop: "{{ templates }}"
-      loop_control:
-        loop_var: outer_item
-      vars:
-        templates:
-          - template1
-          - template2
-          - template3
+    - name: Add VRFs to {{ template }}
+      cisco.mso.mso_schema_template_vrf:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        schema: "{{ schema }}"
+        template: "{{ template }}"
+        ip_data_plane_learning: enabled
+        layer3_multicast: false
+        vrf: "{{ item }}"
+        state: present
+      loop: "{{ vrfs }}"
