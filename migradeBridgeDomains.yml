@@ -1,0 +1,55 @@
+---
+- name: retrieving bridge domains
+  hosts: OLD_NDO
+  gather_facts: false
+  vars:
+    template: "L2_Stretched"
+    schema: "AEDCE"
+  
+  tasks:
+
+    - name: Query all Bridge Domains
+      cisco.mso.mso_schema_template_bd:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        schema: "{{ schema }}"
+        template: "{{ template }}"
+        state: query
+      register: output
+
+    - name: debug
+      debug:
+        var: output
+
+    - name: save query to file
+      ansible.builtin.lineinfile:
+        path: /nmd_reports/02_DATA_CENTER/aciPlaygrounnd/roles/createBridgeDomains/files/existingBridgeDomains_{{ template }}.yml
+        line: "{{ output | to_nice_yaml(indent=2) }}"
+        create: yes
+      delegate_to: localhost
+
+
+
+- name: creating bridge domains
+  hosts: NDO1
+  gather_facts: false
+  vars:
+    template: "template1"
+
+  pre_tasks:
+
+    - name: include vars
+      include_vars: roles/createBridgeDomains/files/existingBridgeDomains_{{ template }}.yml
+
+    - name: template to new data structure
+      ansible.builtin.template:
+        src: roles/createBridgeDomains/templates/createBDTemplate.j2
+        dest: roles/createBridgeDomains/files/BDdict.yml
+      delegate_to: localhost
+
+  tasks:
+
+    - name: include roles
+      ansible.builtin.include_role:
+        name: createBridgeDomains
