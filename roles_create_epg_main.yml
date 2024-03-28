@@ -1,0 +1,27 @@
+---
+# tasks file for roles/createEPGs
+- name: include vars
+  include_vars: roles/createEPGs/files/EPGdict.yml
+  
+- name: Add a new EPG
+  cisco.mso.mso_schema_template_anp_epg:
+    host: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_ssh_pass }}"
+    schema: schema1
+    template: "{{ template }}"
+    anp: "AppProf-NetCentric"
+    bd: 
+      name: "{{ item.bd }}"
+    epg: "{{ item.epg }}"
+    description: "{{ item.description }}"
+    display_name: "{{ item.display_name }}"
+    epg_type: "{{ item.epg_type }}"
+    intra_epg_isolation: "{{ item.intra_epg_isolation }}"
+    intersite_multicast_source: "{{ item.intersite_multicast_source }}"
+    preferred_group: "{{ item.preferred_group }}"
+    proxy_arp: "{{ item.proxy_arp }}"
+    useg_epg: "{{ item.useg_epg }}"
+    qos_level: "unspecified"
+    state: present
+  loop: "{{ endpoint_groups }}"
