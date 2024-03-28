@@ -1,0 +1,66 @@
+---
+# tasks file for roles/createBridgeDomains
+- name: include vars
+  include_vars: roles/createBridgeDomains/files/BDdict.yml
+  
+- name: Add Bridge Domains with Subnets
+  cisco.mso.mso_schema_template_bd:
+    host: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_ssh_pass }}"
+    schema: AEDCE
+    template: "{{ item.vrf.template }}"
+    bd: "{{ item.bd }}"
+    arp_flooding: "{{ item.arp_flooding }}"
+    description: "{{ item.display_name }}"
+    display_name: "{{ item.display_name }}"
+    intersite_bum_traffic: "{{ item.intersite_bum_traffic }}"
+    layer2_stretch: "{{ item.layer2_stretch }}"
+    layer2_unknown_unicast: "{{ item.layer2_unknown_unicast }}"
+    layer3_multicast: "{{ item.layer3_multicast }}"
+    optimize_wan_bandwidth: "{{ item.optimize_wan_bandwidth }}"
+    unicast_routing: "{{ item.unicast_routing }}"
+    unknown_multicast_flooding: "{{ item.unknown_multicast_flooding }}"
+    ipv6_unknown_multicast_flooding: "{{ item.ipv6_unknown_multicast_flooding }}"
+    vrf:
+      name: "{{ item.vrf.name }}"
+      schema: schema1
+      template: "{{ item.vrf.template }}"
+    subnets:
+    - subnet: "{{ item.subnets.subnet }}"
+      primary: "{{ item.subnets.primary }}"
+      description: "{{ item.subnets.description }}"
+      no_default_gateway: "{{ item.subnets.no_default_gateway }}"
+      querier: "{{ item.subnets.querier }}"
+      scope: "{{ item.subnets.scope }}"
+      shared: "{{ item.subnets.shared }}"
+    state: present
+  loop: "{{ bridge_domains }}"
+  when: item.subnets is defined and item.subnets | length > 0 
+
+- name: Add Bridge Domains with no subnets
+  cisco.mso.mso_schema_template_bd:
+    host: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_ssh_pass }}"
+    schema: schema1
+    template: "{{ item.vrf.template }}"
+    bd: "{{ item.bd }}"
+    arp_flooding: "{{ item.arp_flooding }}"
+    description: "{{ item.display_name }}"
+    display_name: "{{ item.display_name }}"
+    intersite_bum_traffic: "{{ item.intersite_bum_traffic }}"
+    layer2_stretch: "{{ item.layer2_stretch }}"
+    layer2_unknown_unicast: "{{ item.layer2_unknown_unicast }}"
+    layer3_multicast: "{{ item.layer3_multicast }}"
+    optimize_wan_bandwidth: "{{ item.optimize_wan_bandwidth }}"
+    unicast_routing: False
+    unknown_multicast_flooding: "{{ item.unknown_multicast_flooding }}"
+    ipv6_unknown_multicast_flooding: "{{ item.ipv6_unknown_multicast_flooding }}"
+    vrf:
+      name: "{{ item.vrf.name }}"
+      schema: schema1
+      template: "{{ item.vrf.template }}"
+    state: present
+  loop: "{{ bridge_domains }}"
+  when: item.subnets is not defined

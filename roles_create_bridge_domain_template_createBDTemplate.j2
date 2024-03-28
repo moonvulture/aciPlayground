@@ -1,0 +1,32 @@
+---
+bridge_domains:
+{% for item in current %}
+- bd: "{{ item.name }}"
+  arp_flooding: {{ item.arpFlood }}
+  description: "{{ item.displayName }}"
+  display_name: "{{ item.displayName }}"
+  intersite_bum_traffic: {{ item.intersiteBumTrafficAllow }}
+  layer2_stretch: {{ item.l2Stretch }}
+  layer2_unknown_unicast: "{{ item.l2UnknownUnicast }}"
+  layer3_multicast: {{ item.l3MCast }}
+  optimize_wan_bandwidth: {{ item.optimizeWanBandwidth }}
+  unicast_routing: {{ item.unicastRouting }}
+  unknown_multicast_flooding: "{{ item.unkMcastAct }}"
+  ipv6_unknown_multicast_flooding: "{{ item.v6unkMcastAct }}"
+  vrf:
+    name: "{{ item.vrfRef | regex_search('/vrfs/([^/]+)$', '\\1') | first }}"
+    schema: "AEDCE"
+    template: "{{ item.vrfRef | regex_search('/templates/([^/]+)/', '\\1') | first }}"
+{% if item.subnets %}
+  subnets:
+{% for subnet in item.subnets %}
+    subnet: {{ subnet.ip }}
+    primary: {{ subnet.primary | default(false) }}
+    description: "{{ item.displayName }}"
+    no_default_gateway: {{ subnet.noDefaultGateway | default(false) }}
+    querier: {{ subnet.querier | default(false) }}
+    scope: "{{ subnet.scope | default('public') }}"
+    shared: {{ subnet.shared | default(false) }}
+{% endfor %}
+{% endif %}
+{% endfor %}
