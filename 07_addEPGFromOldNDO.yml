@@ -1,0 +1,55 @@
+---
+- name: retrieving end point groups
+  hosts: OLD_NDO
+  gather_facts: false
+  vars:
+    template: "L2_Stretched"
+  
+  tasks:
+
+    - name: Query all EPGs
+      cisco.mso.mso_schema_template_anp_epg:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        schema: AEDCE
+        template: "{{ template }}"
+        anp: AppProf-NetCentric
+        state: query
+      register: output
+
+    - name: debug
+      debug:
+        var: output
+
+    - name: save query to file
+      ansible.builtin.lineinfile:
+        path: /nmd_reports/02_DATA_CENTER/aciPlayground/roles/createEPGs/files/existingEPGs_{{ template }}.yml
+        line: "{{ output | to_nice_yaml(indent=2) }}"
+        create: yes
+      delegate_to: localhost
+
+
+
+- name: creating end point groups
+  hosts: NDO
+  gather_facts: false
+  vars:
+    template: "template1"
+
+  pre_tasks:
+
+    - name: include vars
+      include_vars: roles/createEPGs/files/existingEPGs_{{ template }}.yml
+
+    - name: template to new data structure
+      ansible.builtin.template:
+        src: roles/createEPGs/templates/createEPGTemplate.j2
+        dest: roles/createEPGs/files/EPGdict.yml
+      delegate_to: localhost
+
+  tasks:
+
+    - name: include roles
+      ansible.builtin.include_role:
+        name: createEPGs
