@@ -1,0 +1,36 @@
+---
+- name: add Filter
+  hosts: NDO
+  gather_facts: false
+  vars:
+    schema: schema1
+    template: template1
+    filter: test_filter
+  
+  tasks:
+
+    - name: Add a new filter entry
+      cisco.mso.mso_schema_template_filter_entry:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        schema: "{{ schema }}"
+        template: "{{ template }}"
+        filter: "{{ filter }}"
+        entry: "{{ item.entry }}"
+        arp_flag: unspecified
+        destination_from: unspecified
+        destination_to: unspecified
+        display_name: "{{ item.display }}"
+        filter_description: "{{ filter }}"
+        filter_display_name: "{{ filter }}"
+        fragments_only: false
+        ip_protocol: unspecified
+        source_from: unspecified
+        source_to: unspecified
+        stateful: false
+        ethertype: "{{ item.type }}"
+        tcp_session_rules: unspecified
+        state: present
+      loop:
+        - { display: "test1", entry: "Any-type", type: "unspecified" }
