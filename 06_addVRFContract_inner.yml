@@ -1,0 +1,22 @@
+---
+
+- name: Add a {{ outer_item }} contract to a VRF
+  cisco.mso.mso_schema_template_vrf_contract:
+    host: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_ssh_pass }}"
+    schema: "{{ schema }}"
+    template: "{{ template }}"
+    vrf: "{{ item }}"
+    contract:
+      name: "{{ contract_prefix + item }}"
+      type: "{{ outer_item }}"
+    state: present
+  loop: "{{ vrfs }}"
+  vars:
+    contract_prefix: "Any_"
+    schema: schema1
+    template: template1
+    vrfs:
+      - vrf1
+      - vrf2
