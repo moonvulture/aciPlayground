@@ -1,0 +1,14 @@
+---
+endpoint_groups:
+{% for item in current %}
+- bd: "{{ item.bdRef | regex_search('/bds/([^/]+)$', '\\1') | first }}"
+  epg: "{{ item.name }}"
+  description: "{{ item.displayName }}"
+  display_name: "{{ item.displayName }}"
+  epg_type: {{ item.epgType }}
+  intra_epg_isolation: {{ item.intraEpg }}
+  intersite_multicast_source: {{ item.mCastSource }}
+  preferred_group: false
+  proxy_arp: {{ item.proxyArp }}
+  useg_epg: {{ item.uSegEpg }}
+{% endfor %}
