@@ -5,7 +5,7 @@
   vars:
     schema: schema1
     template: template1
-    filter: test_filter
+    filter: Any_
   
   tasks:
 
@@ -16,14 +16,14 @@
         password: "{{ ansible_ssh_pass }}"
         schema: "{{ schema }}"
         template: "{{ template }}"
-        filter: "{{ filter }}"
+        filter: "{{ filter + item.vrf }}"
         entry: "{{ item.entry }}"
         arp_flag: unspecified
         destination_from: unspecified
         destination_to: unspecified
         display_name: "{{ item.display }}"
-        filter_description: "{{ filter }}"
-        filter_display_name: "{{ filter }}"
+        filter_description: "{{ filter + item.vrf }}"
+        filter_display_name: "{{ filter + item.vrf }}"
         fragments_only: false
         ip_protocol: unspecified
         source_from: unspecified
@@ -32,5 +32,5 @@
         ethertype: "{{ item.type }}"
         tcp_session_rules: unspecified
         state: present
-      loop:
-        - { display: "test1", entry: "Any-type", type: "unspecified" }
+      loop: 
+        - { display: "Any", entry: "Any", type: "unspecified", vrf: "vrf1" }
