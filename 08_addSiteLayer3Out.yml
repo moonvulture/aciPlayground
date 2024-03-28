@@ -1,0 +1,27 @@
+---
+
+- name: gathering facts
+  hosts: NDO
+  gather_facts: false
+  vars:
+    schema: schema1
+  tasks:
+
+    - name: add Layer3 Out
+      cisco.mso.mso_schema_template_l3out:
+        host: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        validate_certs: false
+        schema: "{{ schema }}"
+        l3out: "{{ item.name }}"
+        template: "{{ item.template }}"
+        vrf:
+          name: "{{ item.vrf }}"
+          schema: "{{ schema }}"
+          template: VRF_template
+        state: present
+      register: output
+      loop:
+        - { name: "vrf1-siteA-L3Out", vrf: "vrf1", template: "site-A" }
+        - { name: "vrf2-siteB-L3Out", vrf: "vrf2", template: "site-B" }
